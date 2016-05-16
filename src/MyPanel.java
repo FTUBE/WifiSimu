@@ -62,8 +62,12 @@ public class MyPanel extends JPanel {
         }
         
         for(STA s : slist){
-        	Color p = new Color((int)s.bw+80,57,0);
+        	int bw = (int)s.bw;
+            page.setColor(Color.BLACK);
         	page.drawString(""+s.no, s.x+7, s.y-1);
+        	int R =getR(bw);
+        	int G =getG(bw);
+        	Color p = new Color(R,G,0);
         	page.setColor(p);
         	page.fillOval(s.x, s.y, 10, 10);
         }
@@ -79,6 +83,7 @@ public class MyPanel extends JPanel {
 			if(staI<0 || staI >= slist.size()) return;
 			updateUse(staI);
 			if(!isOvrld(alloc2)){
+				repaint();
 				return;
 			}
 			/*initAvail() function WAS supposed to be needed here, but due to the fact that
@@ -89,10 +94,15 @@ public class MyPanel extends JPanel {
 			return;
 		}
 		
-		ArrayList<Integer> changedList = staChanged();
-		if(!changedList.isEmpty()) {
-			initAvail();
-			apAlloc(changedList);
+		initAvail();
+		
+		ArrayList<Integer> changedList = staChanged(1);
+		if(!changedList.isEmpty())
+			apAlloc(changedList,1);
+		
+		changedList = staChanged(2);
+		if(!changedList.isEmpty()){
+			apAlloc(changedList,2);
 			if(isOvrld(alloc2)){
 				loadBalance();
 			}
@@ -100,31 +110,36 @@ public class MyPanel extends JPanel {
 		repaint();
 }
 
-	private void apAlloc(ArrayList<Integer> changedList) {
+	private void apAlloc(ArrayList<Integer> changedList,int which) {
 		for(int sta : changedList){
 			double need = slist.get(sta).bw;
-			int whichap1 = -1,whichap2 = -1;
-			double maxratio1 = Double.MIN_VALUE;
-			double maxratio2 = Double.MIN_VALUE;
+			int whichap = -1;
+			double maxratio = Double.MIN_VALUE;
 			for(int ap : avail.get(sta)){
-				if(residue1[ap] >= need){
-					double ratio = residue1[ap]/(double)clist.get(ap).capa;
-					if(ratio > maxratio1){
-						maxratio1 = ratio;
-						whichap1 = ap;
+				switch(which){
+					case 1:{
+						if(residue1[ap] >= need){
+							double ratio = residue1[ap]/(double)clist.get(ap).capa;
+							if(ratio > maxratio){
+								maxratio = ratio;
+								whichap = ap;
+							}
+						}
+						break;
 					}
-				}
-				if(residue2[ap] >= need){
-					double ratio = residue2[ap]/(double)clist.get(ap).capa;
-					if(ratio > maxratio2){
-						maxratio2 = ratio;
-						whichap2 = ap;
+					case 2:{
+						if(residue2[ap] >= need){
+							double ratio = residue2[ap]/(double)clist.get(ap).capa;
+							if(ratio > maxratio){
+								maxratio = ratio;
+								whichap = ap;
+							}
+						}
+						break;
 					}
 				}
 			}
-			//Then sta should connect to whichap1 in 1, whichap2 in 2.
-			associate(1,sta,whichap1);
-			associate(2,sta,whichap2);
+			associate(which,sta,whichap);
 		}
 	}
 
@@ -186,15 +201,21 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
-	private ArrayList<Integer> staChanged() {
+	private ArrayList<Integer> staChanged(int which) {
 		ArrayList<Integer> changed = new ArrayList<Integer>();
 		for(int i = 0 ; i < slist.size();i++){
-			boolean isC = false;
+			int prevap = -1;
 			for(int j = 0; j < clist.size();j++){
-				if(conn[i][j] != prev[i][j]) isC = true;
-				prev[i][j] = conn[i][j];
+				switch(which){
+					case 1:{
+						if(alloc1[i][j]!=0) prevap = j;
+						break;}
+					case 2:{
+						if(alloc2[i][j]!=0) prevap = j;
+						break;}
+				}
 			}
-			if(isC) changed.add(i);
+			if(!avail.get(i).contains(prevap)) changed.add(i);
 		}
 		return changed;
 	}
@@ -230,5 +251,14 @@ public class MyPanel extends JPanel {
 		}
 		return false;
 	}
-	
+	int getR(int bw){
+		if(bw<0) return 0;
+		if(bw<=5) return 50*bw;
+		return 255;
+	}
+	int getG(int bw){
+		if(bw<=5) return 255;
+		if(bw>10) return 0;
+		return 250-50*(bw-5);
+	}
 }
