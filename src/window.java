@@ -84,7 +84,7 @@ public class window {
  				if(mypanel.clist.isEmpty() || index > mypanel.clist.size() || index <= 0) return;
  				Circle c = mypanel.clist.get(index-1);
 				c.x = (int)APx.getValue();
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -95,7 +95,7 @@ public class window {
  				if(mypanel.clist.isEmpty() || index > mypanel.clist.size() || index <= 0) return;
  				Circle c = mypanel.clist.get(index-1);
 				c.y = (int)APy.getValue();
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -106,7 +106,7 @@ public class window {
  				if(mypanel.clist.isEmpty() || index > mypanel.clist.size() || index <= 0) return;
  				Circle c = mypanel.clist.get(index-1);
 				c.capa = (int)apcapa.getValue();
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -117,7 +117,7 @@ public class window {
  				if(mypanel.clist.isEmpty() || index > mypanel.clist.size() || index <= 0) return;
  				Circle c = mypanel.clist.get(index-1);
 				c.radius = (int)APrad.getValue();
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -125,7 +125,7 @@ public class window {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mypanel.clist.add(new Circle(0,0,50,mypanel.clist.size()+1,0));
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -142,7 +142,7 @@ public class window {
 				if(mypanel.slist.isEmpty() || index > mypanel.slist.size() || index <= 0) return;
 				STA s = mypanel.slist.get((int)STANo.getValue()-1);
 				s.bw = (int) STAbw.getValue();
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -153,7 +153,7 @@ public class window {
 				if(mypanel.slist.isEmpty() || index > mypanel.slist.size() || index <= 0) return;
 				STA s = mypanel.slist.get((int)STANo.getValue()-1);
 				s.y = (int) STAy.getValue();
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -164,7 +164,7 @@ public class window {
 				if(mypanel.slist.isEmpty() || index > mypanel.slist.size() || index <= 0) return;
 				STA s = mypanel.slist.get((int)STANo.getValue()-1);
 				s.x = (int) STAx.getValue();
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -172,7 +172,7 @@ public class window {
 		btnSta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mypanel.slist.add(new STA(mypanel.slist.size()+1, 0, 0, 0));
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		
@@ -220,7 +220,7 @@ public class window {
 					APx.setValue(s.x);
 					APy.setValue(s.y);
 					//System.out.println(x + " "+ y);
-					mypanel.doshit();
+					mypanel.trigger();
 					return;
 				}
 				int index = (int) STANo.getValue();
@@ -231,7 +231,7 @@ public class window {
 				STAx.setValue(c.x);
 				STAy.setValue(c.y);
 				
-				mypanel.doshit();
+				mypanel.trigger();
 			}
 		});
 		JTextArea apst = new JTextArea();
@@ -248,7 +248,7 @@ public class window {
 					s.x += deltax;
 					s.y += deltay;
 					//System.out.println(deltax);
-					mypanel.doshit();
+					mypanel.trigger();
 					window.list(mypanel, apst);
 				}
 			}
