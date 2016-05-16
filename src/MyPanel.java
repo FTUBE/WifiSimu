@@ -1,12 +1,8 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.Shape;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -25,7 +21,7 @@ public class MyPanel extends JPanel {
 	
 	ArrayList<Set<Integer>> avail = new ArrayList<Set<Integer>>();
 	
-	int[] residue1,residue2 = new int[MAXSTA];
+	int[] residue1,residue2 = new int[MAXAP];
 	
     MyPanel()
     {
@@ -65,16 +61,34 @@ public class MyPanel extends JPanel {
 
     }
 
-	public void trigger() {
+	public void trigger(boolean isCapaChanged) {
 		
 		initConn();
+		initResidue();
+		if(isCapaChanged){
+			if(!isOvrld(alloc2)){
+				return;
+			}
+			loadBalance();
+			repaint();
+			return;
+		}
+		
 		ArrayList<Integer> changedList = staChanged();
 		if(!changedList.isEmpty()) {
-			
+			apAlloc(changedList);
 		}
 		
 		repaint();
 }
+
+	private void apAlloc(ArrayList<Integer> changedList) {
+		
+	}
+
+	private void loadBalance() {
+		
+	}
 
 	private void recalculate_futsu(ArrayList<Integer> staChanged) {
 		for(int sta : staChanged){
@@ -98,7 +112,16 @@ public class MyPanel extends JPanel {
 	}
 	
 	private void initResidue(){
-		
+		for(int j = 0; j < clist.size();j++){
+			int sum1 = 0;
+			int sum2 = 0;
+			for(int i = 0; i < slist.size();i++){
+				sum1 += alloc1[i][j];
+				sum2 += alloc2[i][j];
+			}
+			residue1[j] = clist.get(j).capa - sum1;
+			residue2[j] = clist.get(j).capa - sum2;
+		}
 	}
 
 	private void initAvail(){
@@ -135,8 +158,8 @@ public class MyPanel extends JPanel {
 	}
 	
 
-	private boolean isOvrld(int[][] matrix,int[] _total){
-		for(int j = 0; j < _total.length;j++){
+	private boolean isOvrld(int[][] matrix){
+		for(int j = 0; j < clist.size();j++){
 			int sum = 0;
 			for(int i = 0; i < slist.size();i++){
 				sum += matrix[i][j];
