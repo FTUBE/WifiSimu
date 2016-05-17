@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Result implements Comparable<Result> {
+public class Result {
 
 	ArrayList<Integer> strategy;
 	double metric;
@@ -9,12 +9,12 @@ public class Result implements Comparable<Result> {
 		strategy = st;
 		metric = weighed_std;
 	}
-	
+	/*
 	public int compareTo(Result o) {
 		if(metric >= o.metric)
 		return 1;
 		return -1;
-	}
+	}*/
 
 
 

@@ -15,6 +15,7 @@ public class MyPanel extends JPanel {
 	static int MAXSTA = 99;
 	static int MAXAP = 99;
 	
+	double MAGNIFY = 5;
 	double mindiv = Double.MAX_VALUE;
 	ArrayList<Integer> strategy = new ArrayList<Integer>();
 	
@@ -166,13 +167,27 @@ public class MyPanel extends JPanel {
 	}
 
 	private void loadBalance() {
-		System.out.println("Alloc1 Overload\nAlloc2 Load Balance");
-		ArrayList<Integer> tempRes = new ArrayList<Integer>();
+		System.out.println("Alloc2 Overload\nAlloc2 Load Balance");
 		initRecurNeed();
 		traverse(0);
-		/*
-		 * Calculate weighed_div.
-		 */
+		ArrayList<Integer> saiyu = null;
+		double min = Double.MAX_VALUE;
+		
+		for(Result r : result){
+			if(r.metric < min){
+				min = r.metric;
+				saiyu = r.strategy;
+			}
+		}
+		
+		if(saiyu == null){System.out.println("No solution"); return;}
+		
+		for(int i = 0 ; i < saiyu.size();i++){
+			associate(2, i, saiyu.get(i));
+		}
+		
+		//Alloc2.
+		
 	}
 
 	
@@ -197,8 +212,19 @@ public class MyPanel extends JPanel {
 	}
 
 	private double calDev(ArrayList<Integer> _res) {
+		double avg = 0;
+		for(int i : _res){
+			avg += i;
+		}
+		avg = avg/(double)_res.size();
 		
-		return 1;
+		double sum = 0;
+		for(int i : _res){
+			sum += (Math.pow((i-avg),MAGNIFY));
+		}
+		sum /= (double)_res.size();
+		
+		return Math.sqrt(sum);
 	}
 
 	private void initConn() {
@@ -239,6 +265,7 @@ public class MyPanel extends JPanel {
 	}
 	
 	private void initRecurNeed(){
+		result = new ArrayList<Result>();
 		total = new ArrayList<Integer>();
 		for(Circle c : clist){
 			total.add(c.capa);

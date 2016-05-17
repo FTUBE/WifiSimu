@@ -124,7 +124,7 @@ public class window {
 		JButton btnNewButton = new JButton("AP");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mypanel.clist.add(new Circle(0,0,50,mypanel.clist.size()+1,0));
+				mypanel.clist.add(new Circle(0,0,150,mypanel.clist.size()+1,10));
 				mypanel.trigger(false, 0);
 			}
 		});
@@ -171,7 +171,7 @@ public class window {
 		JButton btnSta = new JButton("STA");
 		btnSta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mypanel.slist.add(new STA(mypanel.slist.size()+1, 0, 0, 0));
+				mypanel.slist.add(new STA(mypanel.slist.size()+1, 0, 0, 3));
 				mypanel.trigger(false, 0);
 			}
 		});
