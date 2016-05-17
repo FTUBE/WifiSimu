@@ -26,6 +26,13 @@ public class MyPanel extends JPanel {
 	double[] residue1 = new double[MAXAP];
 	double[] residue2 = new double[MAXAP];
 	
+	//Collectively gather result.
+	ArrayList<Result> result;
+	
+	//Below are used for temporary recursion. Do not delete it.
+	ArrayList<Integer> total;
+	ArrayList<Integer> curResult;
+	
     MyPanel()
     {
         setBackground(Color.WHITE);
@@ -103,9 +110,9 @@ public class MyPanel extends JPanel {
 		changedList = staChanged(2);
 		if(!changedList.isEmpty()){
 			apAlloc(changedList,2);
-			if(isOvrld(alloc2)){
+			/*if(isOvrld(alloc2)){
 				loadBalance();
-			}
+			}*/
 		}
 		repaint();
 }
@@ -159,11 +166,41 @@ public class MyPanel extends JPanel {
 	}
 
 	private void loadBalance() {
-		System.out.println("Overload");
-		
+		System.out.println("Alloc1 Overload\nAlloc2 Load Balance");
+		ArrayList<Integer> tempRes = new ArrayList<Integer>();
+		initRecurNeed();
+		traverse(0);
+		/*
+		 * Calculate weighed_div.
+		 */
 	}
 
 	
+	private void traverse(int sta) {
+		//Base case.
+		if(sta == slist.size()){
+			Result r = new Result((ArrayList<Integer>)curResult.clone(),calDev(total));
+			result.add(r);
+			return;
+		}	
+		//Recur case.
+		for(int ap: avail.get(sta)){
+			int resiBefore = total.get(ap);
+			if(resiBefore < slist.get(sta).bw) continue;
+			
+			total.set(ap, resiBefore-(int)slist.get(sta).bw);
+			curResult.add(ap);
+			traverse(sta+1);
+			curResult.remove(curResult.size()-1);
+			total.set(ap, resiBefore);
+		}
+	}
+
+	private double calDev(ArrayList<Integer> _res) {
+		
+		return 1;
+	}
+
 	private void initConn() {
 		for(STA s : slist){
 			for(Circle c : clist){
@@ -199,6 +236,14 @@ public class MyPanel extends JPanel {
 			}
 			avail.add(s);
 		}
+	}
+	
+	private void initRecurNeed(){
+		total = new ArrayList<Integer>();
+		for(Circle c : clist){
+			total.add(c.capa);
+		}		
+		curResult = new ArrayList<Integer>();
 	}
 	
 	private ArrayList<Integer> staChanged(int which) {
