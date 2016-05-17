@@ -16,6 +16,10 @@ import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 
 import javax.swing.JTextArea;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class window {
 	
@@ -124,7 +128,7 @@ public class window {
 		JButton btnNewButton = new JButton("AP");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mypanel.clist.add(new Circle(0,0,150,mypanel.clist.size()+1,10));
+				mypanel.clist.add(new Circle(0,0,150,mypanel.clist.size()+1,0));
 				mypanel.trigger(false, 0);
 			}
 		});
@@ -254,6 +258,31 @@ public class window {
 			}
 		});
 		
+		JButton btnApdefault = new JButton("APDefault");
+		btnApdefault.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int capa = 30,radius = 150;
+				mypanel.clist.add(new Circle(-70, 0, radius, 1, capa));
+				mypanel.clist.add(new Circle(80, 0, radius, 2, capa));
+				mypanel.clist.add(new Circle(220, 0, radius, 3, capa));
+				mypanel.clist.add(new Circle(0, 160, radius, 4, capa));
+				mypanel.clist.add(new Circle(150, 160, radius, 5, capa));
+				
+				mypanel.repaint();
+				
+				
+			}
+		});
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				mypanel.selected = comboBox.getSelectedIndex();
+				mypanel.repaint();
+			}
+		});
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Normal","Refined","Both"}));
+		
 		
 		
 		
@@ -290,7 +319,7 @@ public class window {
 												.addComponent(APy, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 												.addComponent(ApNo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 												.addComponent(apcapa, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE))))
-									.addPreferredGap(ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+									.addGap(21)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 										.addGroup(groupLayout.createSequentialGroup()
 											.addGap(33)
@@ -301,7 +330,7 @@ public class window {
 												.addComponent(stano, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)))
 										.addComponent(SHINKA, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 									.addGap(18)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 										.addGroup(groupLayout.createSequentialGroup()
 											.addComponent(STAbw, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
 											.addGap(153))
@@ -311,18 +340,20 @@ public class window {
 												.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 													.addComponent(STAx, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
 													.addComponent(STANo, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)))
-											.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+											.addGap(47)
 											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 												.addComponent(btnSta)
-												.addComponent(btnNewButton))
-											.addGap(15))))
+												.addComponent(btnNewButton)
+												.addComponent(btnApdefault, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGap(57)
-									.addComponent(statick))))
+									.addComponent(statick)
+									.addGap(135)
+									.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(40)
 							.addComponent(apst, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE)))
-					.addGap(1))
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -349,7 +380,8 @@ public class window {
 						.addComponent(lblApx)
 						.addComponent(APx, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(STAx, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblStax))
+						.addComponent(lblStax)
+						.addComponent(btnApdefault))
 					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblApy)
@@ -370,7 +402,9 @@ public class window {
 					.addGap(39)
 					.addComponent(aptick)
 					.addGap(33)
-					.addComponent(statick)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(statick)
+						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addComponent(apst, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())

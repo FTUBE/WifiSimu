@@ -26,7 +26,7 @@ public class MyPanel extends JPanel {
 	
 	double[] residue1 = new double[MAXAP];
 	double[] residue2 = new double[MAXAP];
-	
+	int selected = 0;
 	//Collectively gather result.
 	ArrayList<Result> result;
 	
@@ -48,13 +48,13 @@ public class MyPanel extends JPanel {
         
         	for(int i = 0; i < slist.size();i++){
         		for(int j = 0; j < clist.size();j++){
-        			if(alloc1[i][j] != 0){
+        			if(selected != 1 && alloc1[i][j] != 0){
         				STA s = slist.get(i);
         				Circle c = clist.get(j);
         				page.setColor(Color.RED);
         				page.drawLine(s.x+5, s.y+5, c.x+c.radius, c.y+c.radius);
         			}
-        			if(alloc2[i][j] != 0){
+        			if(selected !=0 && alloc2[i][j] != 0){
         				STA s = slist.get(i);
         				Circle c = clist.get(j);
         				page.setColor(Color.BLUE);
