@@ -15,7 +15,8 @@ public class MyPanel extends JPanel {
 	static int MAXSTA = 99;
 	static int MAXAP = 99;
 	
-	double MAGNIFY = 5;
+	double MAGNIFY = 3;
+	double THRESH = 0.7;
 	double mindiv = Double.MAX_VALUE;
 	ArrayList<Integer> strategy = new ArrayList<Integer>();
 	
@@ -31,7 +32,7 @@ public class MyPanel extends JPanel {
 	ArrayList<Result> result;
 	
 	//Below are used for temporary recursion. Do not delete it.
-	ArrayList<Integer> total;
+	ArrayList<Double> total;
 	ArrayList<Integer> curResult;
 	
     MyPanel()
@@ -168,8 +169,18 @@ public class MyPanel extends JPanel {
 
 	private void loadBalance() {
 		System.out.println("Alloc2 Overload\nAlloc2 Load Balance");
-		initRecurNeed();
-		traverse(0);
+		double increment = 0.02,delta = 0;
+		
+		while(true){
+			initRecurNeed(THRESH+delta);
+			traverse(0);
+			if(!result.isEmpty()){
+				break;
+			}
+			delta += increment;
+		}
+		System.out.println("Find solution at THRESH = " + (THRESH + delta));
+		
 		ArrayList<Integer> saiyu = null;
 		double min = Double.MAX_VALUE;
 		
@@ -200,7 +211,7 @@ public class MyPanel extends JPanel {
 		}	
 		//Recur case.
 		for(int ap: avail.get(sta)){
-			int resiBefore = total.get(ap);
+			double resiBefore = total.get(ap);
 			if(resiBefore < slist.get(sta).bw) continue;
 			
 			total.set(ap, resiBefore-(int)slist.get(sta).bw);
@@ -211,18 +222,19 @@ public class MyPanel extends JPanel {
 		}
 	}
 
-	private double calDev(ArrayList<Integer> _res) {
+	private double calDev(ArrayList<Double> total2) {
 		double avg = 0;
-		for(int i : _res){
+		for(double i : total2){
 			avg += i;
 		}
-		avg = avg/(double)_res.size();
-		
+		avg = avg/(double)total2.size();
+
 		double sum = 0;
-		for(int i : _res){
+		for(double i : total2){
 			sum += (Math.pow((i-avg),MAGNIFY));
 		}
-		sum /= (double)_res.size();
+		sum = Math.abs(sum);
+		sum /= (double)total2.size();
 		
 		return Math.sqrt(sum);
 	}
@@ -264,11 +276,11 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
-	private void initRecurNeed(){
+	private void initRecurNeed(double tr){
 		result = new ArrayList<Result>();
-		total = new ArrayList<Integer>();
+		total = new ArrayList<Double>();
 		for(Circle c : clist){
-			total.add(c.capa);
+			total.add(c.capa*tr);
 		}		
 		curResult = new ArrayList<Integer>();
 	}
@@ -319,10 +331,11 @@ public class MyPanel extends JPanel {
 			for(int i = 0; i < slist.size();i++){
 				sum += matrix[i][j];
 			}
-			if(sum > clist.get(j).capa) return true;
+			if(sum > clist.get(j).capa*THRESH) return true;
 		}
 		return false;
 	}
+	
 	int getR(int bw){
 		if(bw<0) return 0;
 		if(bw<=5) return 50*bw;
